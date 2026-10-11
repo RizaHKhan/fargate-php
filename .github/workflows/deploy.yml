@@ -23,6 +23,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::525391386837:role/github-fargate-php-deploy
           aws-region: ${{ env.AWS_REGION }}
+          role-skip-session-tagging: true
 
       # Needed because you build LINUX_ARM64 on an x86 runner
       - name: Set up QEMU
