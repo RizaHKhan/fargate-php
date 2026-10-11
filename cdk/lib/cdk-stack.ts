@@ -25,7 +25,7 @@ export class CdkStack extends Stack {
 
     const { vpc, subnet } = networking(this);
 
-    const defaultVpc = vpc("vpc-0918d046dfe2ddafa");
+    const defaultVpc = vpc();
 
     const publicSubnet1 = subnet({
       type: "public",
