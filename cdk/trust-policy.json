@@ -15,7 +15,7 @@
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:RizaHKhan/fargate-php:*"
+          "token.actions.githubusercontent.com:sub": "repo:RizaHKhan@51720003/fargate-php@1413820300:*"
         }
       }
     }
