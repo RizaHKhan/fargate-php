@@ -1,0 +1,8 @@
+# Fargate
+
+## ECR Repository
+
+```
+
+
+```
