@@ -6,7 +6,7 @@ COPY ./app .
 # Make the entrypoint readable/executable at runtime, but not writable in the image.
 COPY --chmod=555 ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-RUN dnf install -y iproute httpd php php-fpm \
+RUN dnf install -y httpd php php-fpm \
               && dnf clean all
 
 EXPOSE 80
