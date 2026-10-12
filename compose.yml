@@ -1,5 +1,9 @@
 services:
-  server:
-    build: .
+  app:
+    build: ./app
+    environment:
+      API_URL: http://api
     ports:
       - 80:80
+  api:
+    build: ./api

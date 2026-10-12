@@ -1,4 +1,36 @@
-<?php ?>
+<?php
+
+$apiResponse = null;
+$apiError = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $message = trim((string) ($_POST['message'] ?? ''));
+    $apiUrl = getenv('API_URL') ?: 'http://api.service.local';
+
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'content' => http_build_query(['message' => $message]),
+            'timeout' => 3,
+        ],
+    ]);
+
+    $rawResponse = @file_get_contents($apiUrl, false, $context);
+
+    if ($rawResponse === false) {
+        $apiError = 'Could not reach the API service.';
+    } else {
+        $decodedResponse = json_decode($rawResponse, true);
+        $apiResponse = is_array($decodedResponse) ? $decodedResponse : ['raw' => $rawResponse];
+    }
+}
+
+function e(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+?>
 
 <!doctype html>
 <html lang="en">
@@ -62,6 +94,46 @@
         font-size: clamp(1rem, 2vw, 1.2rem);
         line-height: 1.7;
       }
+
+      form {
+        display: flex;
+        gap: 0.75rem;
+        margin: 2rem auto 0;
+        max-width: 32rem;
+      }
+
+      input,
+      button {
+        border: 0;
+        border-radius: 999px;
+        font: inherit;
+        padding: 0.9rem 1rem;
+      }
+
+      input {
+        flex: 1;
+        min-width: 0;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+
+      button {
+        color: #082f49;
+        background: #67e8f9;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .api-result {
+        padding: 1rem;
+        border-radius: 1rem;
+        background: rgba(14, 165, 233, 0.15);
+        word-break: break-word;
+      }
+
+      .api-error {
+        color: #fecaca;
+      }
     </style>
   </head>
   <body>
@@ -69,6 +141,15 @@
       <p class="eyebrow">Launching soon</p>
       <h1>Coming soon</h1>
       <p>We are putting the finishing touches on something new. Check back shortly.</p>
+      <form method="post" action="/">
+        <input name="message" type="text" placeholder="Send a message to the API" required>
+        <button type="submit">Send</button>
+      </form>
+      <?php if ($apiResponse !== null): ?>
+        <p class="api-result">API response: <?= e(json_encode($apiResponse, JSON_THROW_ON_ERROR)) ?></p>
+      <?php elseif ($apiError !== null): ?>
+        <p class="api-error"><?= e($apiError) ?></p>
+      <?php endif; ?>
     </main>
   </body>
 </html>
